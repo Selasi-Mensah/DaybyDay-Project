@@ -2,6 +2,7 @@ import React, { useState } from 'react'; // Import React and useState hook
 import axios from 'axios'; // Import axios for making HTTP requests
 import TaskForm from './components/TaskForm'; // Import TaskForm component
 import TaskList from './components/TaskList'; // Import TaskList component
+import TaskCreationForm from './components/TaskCreationForm';
 
 const App = () => {
   const [tasks, setTasks] = useState([]); // State variable to hold the list of tasks
@@ -14,6 +15,16 @@ const App = () => {
     });
     setTasks(response.data); // Update state with the fetched tasks
   };
+
+  
+function App() {
+  return (
+    <div className="App">
+      <h1>Create a New Task</h1>
+      <TaskCreationForm />
+    </div>
+  );
+}
 
   return (
     <div>
