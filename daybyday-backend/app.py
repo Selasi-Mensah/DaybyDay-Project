@@ -3,10 +3,12 @@
 from flask import Flask, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+from flask_cors import CORS
 from wtforms import Form, StringField, DateField
 from wtforms.validators import DataRequired, ValidationError
 import datetime
 
+CORS(app)  # Enable CORS for all routes
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
