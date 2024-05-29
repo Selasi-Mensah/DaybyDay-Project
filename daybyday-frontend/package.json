@@ -35,5 +35,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
+  // Updating scripts with concurrently
+  {
+    "scripts": {
+      "start": "concurrently \"npm run server\" \"npm run client\"",
+      "server": "python app.py",
+      "client": "npm start --prefix client"
+    }
+  }
+  
 }
