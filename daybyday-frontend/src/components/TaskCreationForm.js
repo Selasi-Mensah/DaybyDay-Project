@@ -1,8 +1,9 @@
 // src/components/TaskCreationForm.js
-import React, { useState } from 'react';
-import axios from 'axios';
 
-const TaskCreationForm = () => {
+import React, { useState } from 'react'; // Import necessary hooks
+import axios from 'axios'; // Import axios for making HTTP requests
+
+const TaskCreationForm = ({ refreshTasks }) => { // Destructure refreshTasks from props
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -11,6 +12,7 @@ const TaskCreationForm = () => {
 
   const [errors, setErrors] = useState({});
 
+  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,6 +20,7 @@ const TaskCreationForm = () => {
     });
   };
 
+  // Validate form data
   const validate = () => {
     const newErrors = {};
     if (!formData.title) newErrors.title = 'Title is required';
@@ -27,16 +30,23 @@ const TaskCreationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      axios.post('http://127.0.0.1:5000/create-task', formData)
-        .then(response => {
-          console.log('Task created:', response.data);
-        })
-        .catch(error => {
-          console.error('Task creation error:', error);
+      const token = localStorage.getItem('token'); // Get the stored JWT token
+      try {
+        await axios.post('http://127.0.0.1:5000/create-task', {
+          title: formData.title,
+          description: formData.description,
+          due_date: formData.dueDate
+        }, {
+          headers: { Authorization: `Bearer ${token}` } // Set authorization header with JWT token
         });
+        refreshTasks(); // Refresh the task list after creating a new task
+      } catch (error) {
+        console.error('Error creating task', error);
+      }
     }
   };
 
@@ -44,17 +54,17 @@ const TaskCreationForm = () => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Title</label>
-        <input type="text" name="title" value={formData.title} onChange={handleChange} />
+        <input type="text" name="title" value={formData.title} onChange={handleChange} required />
         {errors.title && <p style={{ color: 'red' }}>{errors.title}</p>}
       </div>
       <div>
         <label>Description</label>
-        <textarea name="description" value={formData.description} onChange={handleChange} />
+        <textarea name="description" value={formData.description} onChange={handleChange} required />
         {errors.description && <p style={{ color: 'red' }}>{errors.description}</p>}
       </div>
       <div>
         <label>Due Date</label>
-        <input type="date" name="dueDate" value={formData.dueDate} onChange={handleChange} />
+        <input type="date" name="dueDate" value={formData.dueDate} onChange={handleChange} required />
         {errors.dueDate && <p style={{ color: 'red' }}>{errors.dueDate}</p>}
       </div>
       <button type="submit">Create Task</button>

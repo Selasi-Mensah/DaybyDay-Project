@@ -1,5 +1,6 @@
 // src/App.js
-import React, { useState, useEffect } from 'react'; // Import React, useState, and useEffect hooks
+
+import React, { useState, useEffect } from 'react'; // Import necessary hooks
 import axios from 'axios'; // Import axios for making HTTP requests
 import TaskForm from './components/TaskForm'; // Import TaskForm component
 import TaskList from './components/TaskList'; // Import TaskList component
@@ -12,7 +13,7 @@ const App = () => {
   const refreshTasks = async () => {
     try {
       const token = localStorage.getItem('token'); // Get the stored JWT token
-      const response = await axios.get('/tasks', {
+      const response = await axios.get('http://127.0.0.1:5000/tasks', {
         headers: { Authorization: `Bearer ${token}` } // Set authorization header with JWT token
       });
       setTasks(response.data); // Update state with the fetched tasks
@@ -31,7 +32,7 @@ const App = () => {
       <h1>DayByDay Task Scheduler</h1>
       <TaskForm refreshTasks={refreshTasks} /> {/* Render TaskForm and pass refreshTasks function */}
       <TaskCreationForm refreshTasks={refreshTasks} /> {/* Render TaskCreationForm and pass refreshTasks function */}
-      <TaskList tasks={tasks} /> {/* Render TaskList and pass tasks */}
+      <TaskList tasks={tasks} refreshTasks={refreshTasks} /> {/* Render TaskList and pass tasks and refreshTasks */}
     </div>
   );
 };

@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react'; // Import React and useEffect hook
-import axios from 'axios';
+// src/components/TaskList.js
+
+import React, { useEffect } from 'react'; // Import React and useEffect hook
+import axios from 'axios'; // Import axios for making HTTP requests
 import TaskItem from './TaskItem'; // Import TaskItem component
 
-const TaskList = () => {
-  const [tasks, setTasks, refreshTasks] = useState([]);
+const TaskList = ({ tasks, refreshTasks }) => { // Destructure tasks and refreshTasks from props
 
-  // Use useEffect to refresh the task list when the component mounts
+  // Fetch tasks when the component mounts or refreshTasks changes
   useEffect(() => {
-    refreshTasks();
+    const fetchTasks = async () => {
+      const token = localStorage.getItem('token'); // Get the stored JWT token
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/tasks', {
+          headers: { Authorization: `Bearer ${token}` } // Set authorization header with JWT token
+        });
+        setTasks(response.data); // Update state with the fetched tasks
+      } catch (error) {
+        console.error('Error fetching tasks:', error); // Handle error
+      }
+    };
+    fetchTasks();
   }, [refreshTasks]); // Dependency array ensures this effect runs only when refreshTasks changes
-
-  useEffect(() => {
-    // Fetch the list of tasks from the backend
-    axios.get('http://127.0.0.1:5000/tasks')
-      .then(response => {
-        setTasks(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching tasks:', error);
-      });
-  }, []);
 
   return (
     <div>
-      <h2>Task List</h2>
+      <h2>Your Tasks</h2>
       <ul>
         {tasks.map(task => (
           <TaskItem key={task.id} task={task} /> // Render TaskItem for each task
