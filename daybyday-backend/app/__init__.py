@@ -1,28 +1,28 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from config import Config
 
-# Initialize the database, migration, and JWT manager
 db = SQLAlchemy()
 migrate = Migrate()
+bcrypt = Bcrypt()
 jwt = JWTManager()
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
+    app.config.from_object(config_class)
 
-    # Configurations for the app
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'  # SQLite database
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable track modifications to save resources
-    app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Secret key for JWT token generation
-
-    # Initialize extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
+    bcrypt.init_app(app)
     jwt.init_app(app)
 
-    # Register routes blueprint
-    from .routes import bp as routes_bp
-    app.register_blueprint(routes_bp)
+    from app.routes import main
+    from app.auth import auth
+
+    app.register_blueprint(main)
+    app.register_blueprint(auth)
 
     return app
