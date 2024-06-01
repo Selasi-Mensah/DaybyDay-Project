@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'; // Import necessary hooks
 import axios from 'axios'; // Import axios for making HTTP requests
-import TaskForm from './components/TaskForm'; // Import TaskForm component
 import TaskList from './components/TaskList'; // Import TaskList component
 import TaskCreationForm from './components/TaskCreationForm'; // Import TaskCreationForm component
 
@@ -30,7 +29,6 @@ const App = () => {
   return (
     <div>
       <h1>DayByDay Task Scheduler</h1>
-      <TaskForm refreshTasks={refreshTasks} /> {/* Render TaskForm and pass refreshTasks function */}
       <TaskCreationForm refreshTasks={refreshTasks} /> {/* Render TaskCreationForm and pass refreshTasks function */}
       <TaskList tasks={tasks} refreshTasks={refreshTasks} /> {/* Render TaskList and pass tasks and refreshTasks */}
     </div>
