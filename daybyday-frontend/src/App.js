@@ -1,38 +1,29 @@
-// src/App.js
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Register from './components/Register';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
-import React, { useState, useEffect } from 'react'; // Import necessary hooks
-import axios from 'axios'; // Import axios for making HTTP requests
-import TaskList from './components/TaskList'; // Import TaskList component
-import TaskCreationForm from './components/TaskCreationForm'; // Import TaskCreationForm component
-
-const App = () => {
-  const [tasks, setTasks] = useState([]); // State variable to hold the list of tasks
-
-  // Function to refresh the task list by fetching tasks from the backend
-  const refreshTasks = async () => {
-    try {
-      const token = localStorage.getItem('token'); // Get the stored JWT token
-      const response = await axios.get('http://127.0.0.1:5000/tasks', {
-        headers: { Authorization: `Bearer ${token}` } // Set authorization header with JWT token
-      });
-      setTasks(response.data); // Update state with the fetched tasks
-    } catch (error) {
-      console.error('Error fetching tasks:', error); // Handle error
-    }
-  };
-
-  // Fetch tasks when the component mounts
-  useEffect(() => {
-    refreshTasks(); // Refresh tasks when the component mounts
-  }, []);
+function App() {
+  const [isAuth, setIsAuth] = useState(false);
 
   return (
-    <div>
-      <h1>DayByDay Task Scheduler</h1>
-      <TaskCreationForm refreshTasks={refreshTasks} /> {/* Render TaskCreationForm and pass refreshTasks function */}
-      <TaskList tasks={tasks} refreshTasks={refreshTasks} /> {/* Render TaskList and pass tasks and refreshTasks */}
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/login">
+            <Login setAuth={setIsAuth} />
+          </Route>
+          <Route path="/dashboard">
+            {isAuth ? <Dashboard /> : <p>Please log in</p>}
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
